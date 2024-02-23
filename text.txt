@@ -1,0 +1,2892 @@
+#include <graphics.h>
+#include <conio.h>
+#include <dos.h>
+#include <bits/stdc++.h>
+#include <stdio.h>
+#include <iostream>
+#include <cstring>
+#include <cmath>
+#include <windows.h>
+#include <mmsystem.h>
+#include <stdlib.h>
+#include <time.h>
+#include <cstdlib>
+
+using namespace std;
+
+void fillCube();
+void deseneazaPiesa(int x, int y, int radius, int border_color, int fill_color);
+void deseneazaPiese(int tabla[8][8]);
+void deseneazaPatrat(int x, int y, int border_color, int fill_color);
+void tablaDeJoc(int tabla[8][8]);
+void muta_piesa(int i, int &win);
+void menu();
+void patratele();
+void reguli();
+void muzicaSistem();
+void muzicaJoc();
+void settings();
+void settingsChange();
+void selecteazaMod();
+void foxWon();
+int victorie();
+void houndsWon();
+void EasyMod(int & win);
+void mediumMod(int & win);
+void modurile();
+int pozitie_caini();
+void hardMod(int & win);
+int  moves[9][9],a, b, super=0, super1=0, mod=0, cul1=15, cul2=15, cul3=15, cul4=0, pc=14, pv=12, color=8, exit1=1;  //exit2=1;
+int b1=0, b2=0, b3=0, b4=0, b5=0, b6=0, b7=0, b8=0, b9=0, b10=0, b11=0, b12=0, b13=0, b14=0, b15=0, b16=0, b17=0, b18=0;
+int c1=0, c2=0, c3=0, c4=0, c5=0, c6=0, c7=0, c8=0, c9=0, c10=0, c11=0, c12=0, c13=0, c14=0, c15=0, c16=0, c17=0, c18=0;
+
+int main()
+{
+start:
+    menu();
+    int ok=1, exit=1;
+    while(ok==1)
+    {
+        while(!ismouseclick(WM_LBUTTONDOWN));
+        getmouseclick(WM_LBUTTONDOWN,a,b);
+
+        if(a>315 and a<485 and b>350 and b<390)
+        {
+            ok=2;
+            exit1=1;
+            selecteazaMod();
+            //muzicaSistem();
+        }
+        if(a>315 and a<485 and b>485 and b<525)
+        {
+            ok=2,closegraph();
+            //muzicaSistem();
+            exit1=1;
+            exit=0;
+        }
+        if(a>315 and a<485 and b>395 and b<435)
+        {
+            ok=0;
+            //muzicaSistem();
+            reguli();
+        }
+        if(a>315 and a<485 and b>440 and b<480)
+        {
+            ok=0;
+            //muzicaSistem();
+            settings();
+        }
+    }
+
+    if(ok==0 or exit1==0)
+        goto start;
+
+playAgain:
+    initwindow(800, 800);
+    int i=1,j,win=0, tabla[8][8]; /* = {
+                      {0,0,0,2,0,0,0,0},
+                      {0,0,0,0,0,0,0,0},
+                      {0,0,0,0,0,0,0,0},
+                      {0,0,0,0,0,0,0,0},
+                      {0,0,0,0,0,0,0,0},
+                      {0,0,0,0,0,0,0,0},
+                      {0,0,0,0,0,0,0,0},
+                      {1,0,1,0,1,0,1,0},
+                      };*/
+
+    moves[1][4]=2;
+    moves[8][1]=3;
+    moves[8][3]=3;
+    moves[8][5]=3;
+    moves[8][7]=3;
+
+    if(exit==0)
+        closegraph();
+
+    else
+    {
+        setbkcolor(color);
+        cleardevice();
+        tablaDeJoc(tabla);
+        deseneazaPiese(tabla);
+
+        cout<<"mod="<<mod<<endl;
+        if(mod==0)
+        {
+            while(win==0)
+            {
+                muta_piesa(i,win);
+                i++;
+                if(victorie()!=0)// or moves[2][3]==2)
+                {
+                    if(victorie()==2)
+                        win=2;
+                    if(victorie()==3)
+                        win=3;
+                }
+            }
+        }
+
+        if(mod==1)
+        {
+            moves[1][4]=2;
+            moves[8][1]=3;
+            moves[8][3]=3;
+            moves[8][5]=3;
+            moves[8][7]=3;
+            while(win==0)
+            {
+                EasyMod(win);
+                if(victorie()!=0)// or moves[2][3]==2)
+                {
+                    if(victorie()==2)
+                        win=2;
+                    if(victorie()==3)
+                        win=3;
+                }
+            }
+        }
+        if(mod==2)
+        {
+            moves[1][4]=2;
+            moves[8][1]=3;
+            moves[8][3]=3;
+            moves[8][5]=3;
+            moves[8][7]=3;
+            while(win==0)
+            {
+                mediumMod(win);
+                if(victorie()!=0)// or moves[2][3]==2)
+                {
+                    if(victorie()==2)
+                        win=2;
+                    if(victorie()==3)
+                        win=3;
+                }
+            }
+        }
+        if(mod==3)
+        {
+            moves[1][4]=2;
+            moves[8][1]=3;
+            moves[8][3]=3;
+            moves[8][5]=3;
+            moves[8][7]=3;
+            while(win==0)
+            {
+                hardMod(win);
+                if(victorie()!=0)// or moves[2][3]==2)
+                {
+                    if(victorie()==2)
+                        win=2;
+                    if(victorie()==3)
+                        win=3;
+                }
+            }
+        }
+        if(win==2)
+        {
+            foxWon();
+            cout<<"super="<<super<<endl;
+            if(super==2)
+            {
+                for(int e=1; e<=8; e++)
+                    for(int y=1; y<=8; y++)
+                        moves[e][y]=0;
+                moves[1][4]=2;
+                moves[8][1]=3;
+                moves[8][3]=3;
+                moves[8][5]=3;
+                moves[8][7]=3;
+                goto playAgain;
+            }
+        }
+
+        if(win==3)
+        {
+            houndsWon();
+            cout<<"super1="<<super1<<endl;
+            if(super1==2)
+            {
+                for(int e=1; e<=8; e++)
+                    for(int y=1; y<=8; y++)
+                        moves[e][y]=0;
+                moves[1][4]=2;
+                moves[8][1]=3;
+                moves[8][3]=3;
+                moves[8][5]=3;
+                moves[8][7]=3;
+                goto playAgain;
+            }
+        }
+    }
+    return 0;
+}
+
+int victorie()
+{
+    if(moves[8][1]==2 or moves[8][3]==2 or moves[8][5]==2 or moves[8][7]==2)
+        return 2;
+
+    if(moves[1][8]==2 and moves[2][7]==3) return 3;
+    if(moves[1][6]==2 and moves[2][7]==3 and moves[2][5]==3) return 3;
+    if(moves[1][4]==2 and moves[2][3]==3 and moves[2][5]==3) return 3;
+    if(moves[1][2]==2 and moves[2][1]==3 and moves[2][3]==3) return 3;
+
+    if(moves[2][1]==2 and moves[1][2]==3 and moves[3][2]==3) return 3;
+    if(moves[4][1]==2 and moves[3][2]==3 and moves[5][2]==3) return 3;
+    if(moves[6][1]==2 and moves[5][2]==3 and moves[7][2]==3) return 3;
+
+
+    if(moves[3][8]==2 and moves[2][7]==3 and moves[4][7]==3) return 3;
+    if(moves[5][8]==2 and moves[4][7]==3 and moves[6][7]==3) return 3;
+    if(moves[7][8]==2 and moves[6][7]==3 and moves[8][7]==3) return 3;
+
+    for(int h=2; h<=7; h++)
+        for(int f=2; f<=7; f++)
+            if(moves[h][f]==2)
+                if(moves[h-1][f-1]==3 and moves[h-1][f+1]==3 and moves[h+1][f-1]==3 and moves[h+1][f+1]==3)
+                    return 3;
+
+    return 0;
+}
+
+void muta_piesa(int i, int & win)
+{
+    int a,b;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,a,b);
+
+    int x,y;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+
+    while(x%50!=0) x--;
+    while(y%50!=0) y--;
+
+
+    while(a%50!=0) a--;
+    while(b%50!=0) b--;
+
+    int bine = 1;
+
+    if(x<200 or x>600 or y<200 or y>600)
+        bine=0;
+
+    if(a<200 or a>600 or b<200 or b>600)
+        bine = 0;
+
+    if(((x/10%10+y/10%10)%2==0))
+        bine = 0;
+
+    if(((a/10%10+b/10%10)%2==0))
+        bine = 0;
+////////////////////////////////////
+    int liniea=b, linieb=a;
+    liniea/=50, linieb/=50;
+    liniea-=3,linieb-=3;
+/////////////////////////////////
+    int liniex=y, liniey=x;
+    liniex/=50,liniey/=50;
+    liniex-=3,liniey-=3;
+
+    if(abs(liniea-liniex)!=1) bine=0;
+    if(abs(linieb-liniey)!=1) bine=0;
+////////////////
+    if(moves[liniea][linieb]==0) bine=0;
+    cout<<"Linie a "<<liniea<<" Linie b "<<linieb<<endl;
+    if(moves[liniex][liniey]==2 or moves[liniex][liniey]==3) bine=0;
+    cout<<"Linie x "<<liniex<<" Linie y "<<liniey<<endl<<bine<<endl;
+
+    ////////////////////////////////////////////////
+    /*
+    int u,p;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,u,p);
+
+      if(u>375 and u<475 and p>115 and p<135)
+      {
+        rectangle(750, 750, 775, 775);
+        //line(750, 750, 775, 775);
+        //line(775, 750, 750, 775);
+      }
+      */
+    /////////////////////////////////////////////////
+////////////////////////////////
+    if(i%2==1 and moves[liniea][linieb]!=2) bine=0;
+    if(i%2==0 and moves[liniea][linieb]!=3) bine=0;
+
+
+    if(i%2==0 and liniea<liniex) bine=0;
+
+    if(bine==1)
+    {
+        moves[liniex][liniey]=moves[liniea][linieb];
+        moves[liniea][linieb]=0;
+
+
+        a+=25;
+        b+=25;
+        x+=25;
+        y+=25;
+
+        if(i%2==0)
+        {
+            deseneazaPiesa(x,y,14,pc,pc);
+            deseneazaPatrat(a,b,cul1,cul2);
+            //muzicaJoc();
+            delay(100);
+        }
+
+        if(i%2==1)
+        {
+            deseneazaPiesa(x,y,14,pv,pv);
+            deseneazaPatrat(a,b,cul1,cul2);
+            //muzicaJoc();
+            delay(100);
+        }
+    }
+    if(bine==0)
+    {
+        muta_piesa(i+2, win);
+    }
+}
+
+void fillCube(int x, int y, int border_color, int fill_color)
+{
+    setfillstyle(SOLID_FILL, fill_color);
+    floodfill(x, y, border_color);
+}
+
+void menu()
+{
+    initwindow(800, 800);
+
+    setbkcolor(0);
+    cleardevice();
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(2);
+    outtextxy(400, 300, "FOX AND THE HOUNDS");
+
+    patratele();
+
+    settextstyle(10, 0, 4);
+    outtextxy(400, 378, "PLAY");
+
+    settextstyle(10, 0, 4);
+    outtextxy(400, 423, "RULES");
+
+    settextstyle(10, 0, 4);
+    outtextxy(400, 468, "SETTINGS");
+
+    settextstyle(10, 0, 4);
+    outtextxy(400, 513, "EXIT");
+    //PlaySound(TEXT("sunet.wav"), NULL, SND_SYNC);
+    setcolor(15);
+    settextstyle(9, 0, 1);
+    outtextxy(400, 775, "Version 1.5.3");
+}
+
+void patratele()
+{
+    int y1, y2;
+    y1=350;
+    y2=390;
+
+    rectangle(315, y1, 485, y2);
+    rectangle(315, y1+45, 485, y2+45);
+    rectangle(315, y1+90, 485, y2+90);
+    rectangle(315, y1+135, 485, y2+135);
+}
+
+void deseneazaPatrat(int x, int y, int border_color, int fill_color)
+{
+    setfillstyle(SOLID_FILL, fill_color);
+    floodfill(x, y, border_color);
+}
+
+void deseneazaPiese(int tabla [8][8])
+{
+    for (int i=0; i<8; i++)
+    {
+        for (int j=0; j<8; j++)
+        {
+            if(tabla [i][j]==1)
+            {
+                deseneazaPiesa(225+j*50, 225+i*50, 14, pc, pc);
+            }
+            else if (tabla [i][j]==2)
+            {
+                deseneazaPiesa(225+j*50, 225+i*50, 14, pv, pv);
+            }
+        }
+    }
+}
+
+void deseneazaPiesa(int x, int y, int radius, int border_color, int fill_color)
+{
+    setfillstyle(SOLID_FILL, fill_color);
+    setcolor(border_color);
+    circle(x, y, radius);
+    floodfill(x, y, border_color);
+}
+
+void tablaDeJoc(int tabla[8][8])
+{
+
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(color+1);
+    outtextxy(400, 125, "FOX AND THE HOUNDS");
+    for(int l=200; l<=550; l+=50)
+    {
+        for(int k=200; k<=550; k+=50)
+        {
+            setcolor(15);
+            rectangle(l, k, l+50, k+50);
+        }
+    }
+
+    tabla[0][3] = 2; //vulpea
+    tabla[7][0] = 1; //caine
+    tabla[7][2] = 1; //caine
+    tabla[7][4] = 1; //caine
+    tabla[7][6] = 1; //caine
+
+    for (int i=0; i<8; i++)
+    {
+        for (int j=0; j<8; j++)
+        {
+            if ((i+j) % 2 == 1)
+            {
+                deseneazaPatrat(225+i*50, 225+j*50, cul1, cul2);//15 15
+            }
+            else
+            {
+                deseneazaPatrat(225+i*50, 225+j*50, cul3, cul4);//15 0
+            }
+        }
+    }
+}
+
+void reguli()
+{
+    initwindow(800, 800);
+    setbkcolor(0);
+    cleardevice();
+
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(2);
+    outtextxy(400, 75, "FOX AND THE HOUNDS");
+
+    settextstyle(10, 0, 4);
+    outtextxy(400, 128, "RULES");
+
+
+    setcolor(15);
+    settextstyle(0, 0, 2);
+    settextjustify(1, 1);
+    int y=170;
+    int nr=1;
+
+    char propozitie[200];
+    FILE *fisier;
+    fisier = fopen("reguli.txt","r");
+    int numar_propozitie=0;
+    while(!feof(fisier))
+    {
+        numar_propozitie++;
+        fgets(propozitie, 200, fisier);
+        if(numar_propozitie!=23)
+            //if(numar_propozitie%2==1)
+            printf("%s",propozitie);
+
+    }
+
+    setcolor(2);
+    settextstyle(10, 0, 4);
+    outtextxy(400, y+550, "GO BACK");
+    rectangle(315, y+520, 485, y+560);
+
+    int ok=1;
+    while(ok==1)
+    {
+        while(!ismouseclick(WM_LBUTTONDOWN));
+        getmouseclick(WM_LBUTTONDOWN,a,b);
+
+        if(a>315 and a<485 and b>690 and b<730)
+        {
+            ok=0;
+            //muzicaSistem();
+            system("cls");
+            closegraph();
+        }
+    }
+}
+
+/*
+void reguli()
+{
+    initwindow(800, 800);
+    setbkcolor(0);
+    cleardevice();
+
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(2);
+    outtextxy(400, 75, "FOX AND THE HOUNDS");
+
+    settextstyle(10, 0, 4);
+    outtextxy(400, 128, "RULES");
+
+    setcolor(15);
+    settextstyle(0, 0, 2);
+    settextjustify(1, 1);
+    int y=170;
+    outtextxy(400, y, "Fox and the Hounds is an abstract strategy board");
+    outtextxy(400, y+15, "game that uses checkers and an 8×8 grid. It is part ");
+    outtextxy(400, y+30, "of a bigger family of “chasing” games that all follow ");
+    outtextxy(400, y+45, "different rules.");
+    outtextxy(400, y+95, "The game begins with the fox making their move.");
+    outtextxy(400, y+110, "The fox is allowed to move one space diagonally");
+    outtextxy(400, y+125, "in any direction much like a king piece in checkers.");
+    outtextxy(400, y+140, "After the fox makes their first move, the hounds can now");
+    outtextxy(400, y+155, "take their turn.");
+    outtextxy(400, y+205, "During the hounds turn, the player may choose one");
+    outtextxy(400, y+220, "hound to move. Hounds move diagonally, but they may only");
+    outtextxy(400, y+235, "move forward.");
+    outtextxy(400, y+285, "Once a hound has reached the opposite end of");
+    outtextxy(400, y+300, "the board it is stuck and can no longer move.");
+    outtextxy(400, y+315, "In this game, neither the fox or the hounds are");
+    outtextxy(400, y+330, " allowed to jump over or land on other pieces.");
+    outtextxy(400, y+345, "They may only move into an adjacent space that is open.");
+    outtextxy(400, y+395, "Play like this continues until either side meets");
+    outtextxy(400, y+410, "their win condition. If the fox is able to reach the");
+    outtextxy(400, y+425, "opposite end of the board and end up in the hound’s");
+    outtextxy(400, y+440, "starting row, the fox wins. If the hounds surround the");
+    outtextxy(400, y+455, "fox in such a way that it can no longer move in any");
+    outtextxy(400, y+470, "direction, the hounds win.");
+    setcolor(2);
+    settextstyle(10, 0, 4);
+    outtextxy(400, y+550, "GO BACK");
+    rectangle(315, y+520, 485, y+560);
+
+    int ok=1;
+    while(ok==1)
+    {
+        while(!ismouseclick(WM_LBUTTONDOWN));
+        getmouseclick(WM_LBUTTONDOWN,a,b);
+
+        if(a>315 and a<485 and b>690 and b<730)
+        {
+            ok=0;
+            //muzicaSistem();
+            closegraph();
+        }
+    }
+}
+*/
+
+void muzicaSistem()
+{
+    PlaySound(TEXT("menuclick.wav"), NULL, SND_SYNC);
+}
+
+void muzicaJoc()
+{
+    PlaySound(TEXT("piesasunet.wav"), NULL, SND_SYNC);
+}
+
+void settings()
+{
+    initwindow(800, 800);
+    setbkcolor(0);
+    cleardevice();
+
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(2);
+    outtextxy(400, 75, "FOX AND THE HOUNDS");
+
+    settextstyle(10, 0, 4);
+    outtextxy(400, 128, "SETTINGS");
+
+    int y=170;
+    setcolor(2);
+    settextstyle(10, 0, 4);
+    outtextxy(400, y+550, "GO BACK");
+    rectangle(315, y+520, 485, y+560);
+
+    settingsChange();
+
+////////////////////////////////////
+    if(b2==0 and b3==0) b1=15, c1=10;
+//    if(b1==0 and b3==0) b1=0, c1=0, b2=15, c2=10, b3=0, c3=0;
+//    if(b3==15) b1=0, c1=0, b2=0, c2=0, c3=10;
+////////////////////////////////////
+    if(b5==0 and b6==0) b4=15, c4=10;
+//    if(b4==0 and b6==0) b4=0, c4=0, b5=15, c5=10, b6=0, c6=0;
+//    if(b6==15) b4=0, c4=0, b5=0, c5=0, c6=10;
+////////////////////////////////////
+    if(b7==0 and b8==0 and b9==0 and b10==0 and b11==0 and b12==0 and b13==0 and b15==0 and b16==0 and b17==0 and b18==0) b14=15, c14=10;
+////////////////////////////////////
+
+    setcolor(b1);
+    circle(250, 370, 10);
+    deseneazaPiesa(250, 370, 10, b1, c1);
+
+    setcolor(b2);
+    circle(400, 370, 10);
+    deseneazaPiesa(400, 370, 10, b2, c2);
+
+    setcolor(b3);
+    circle(550, 370, 10);
+    deseneazaPiesa(550, 370, 10, b3, c3);
+
+/////////////piesele////////////////
+
+    setcolor(b4);
+    circle(220, 485, 10);
+    deseneazaPiesa(220, 485, 10, b4, c4);
+
+    setcolor(b5);
+    circle(400, 485, 10);
+    deseneazaPiesa(400, 485, 10, b5, c5);
+
+    setcolor(b6);
+    circle(580, 485, 10);
+    deseneazaPiesa(580, 485, 10, b6, c6);
+
+////////////squares/////////////////
+
+    setcolor(b7);
+    circle(113, 585, 10);
+    deseneazaPiesa(113, 585, 10, b7, c7);
+
+    setcolor(b8);
+    circle(163, 585, 10);
+    deseneazaPiesa(163, 585, 10, b8, c8);
+
+    setcolor(b9);
+    circle(213, 585, 10);
+    deseneazaPiesa(213, 585, 10, b9, c9);
+
+    setcolor(b10);
+    circle(263, 585, 10);
+    deseneazaPiesa(263, 585, 10, b10, c10);
+
+    setcolor(b11);
+    circle(313, 585, 10);
+    deseneazaPiesa(313, 585, 10, b11, c11);
+
+    setcolor(b12);
+    circle(363, 585, 10);
+    deseneazaPiesa(363, 585, 10, b12, c12);
+
+    setcolor(b13);
+    circle(413, 585, 10);
+    deseneazaPiesa(413, 585, 10, b13, c13);
+
+    setcolor(b14);
+    circle(463, 585, 10);
+    deseneazaPiesa(463, 585, 10, b14, c14);
+
+    setcolor(b15);
+    circle(513, 585, 10);
+    deseneazaPiesa(513, 585, 10, b15, c15);
+
+    setcolor(b16);
+    circle(563, 585, 10);
+    deseneazaPiesa(563, 585, 10, b16, c16);
+
+    setcolor(b17);
+    circle(613, 585, 10);
+    deseneazaPiesa(613, 585, 10, b17, c17);
+
+    setcolor(b18);
+    circle(663, 585, 10);
+    deseneazaPiesa(663, 585, 10, b18, c18);
+
+
+
+    int ok=1;
+    while(ok==1)
+    {
+        while(!ismouseclick(WM_LBUTTONDOWN));
+        getmouseclick(WM_LBUTTONDOWN,a,b);
+
+        if(a>315 and a<485 and b>690 and b<730)
+        {
+            ok=0;
+            //muzicaSistem();
+            closegraph();
+        }
+
+        if(a>200 and a<300 and b>250 and b<350)
+        {
+            cul1=15;
+            cul2=15;
+            cul3=15;
+            cul4=0;
+            b1=15, b2=0, b3=0;
+            c1=10, c2=0, c3=0;
+            setcolor(b1);
+            circle(250, 370, 10);
+            deseneazaPiesa(250, 370, 10, b1, c1);
+
+            setcolor(b2);
+            circle(400, 370, 10);
+            deseneazaPiesa(400, 370, 10, b2, c2);
+
+            setcolor(b3);
+            circle(550, 370, 10);
+            deseneazaPiesa(550, 370, 10, b3, c3);
+            ok=1;
+        }
+
+        if(a>350 and a<450 and b>250 and b<350)
+        {
+            cul1=15;
+            cul2=10;
+            cul3=15;
+            cul4=8;
+            b1=0, b2=15, b3=0;
+            c1=0, c2=10, c3=0;
+            setcolor(b1);
+            circle(250, 370, 10);
+            deseneazaPiesa(250, 370, 10, b1, c1);
+
+            setcolor(b2);
+            circle(400, 370, 10);
+            deseneazaPiesa(400, 370, 10, b2, c2);
+
+            setcolor(b3);
+            circle(550, 370, 10);
+            deseneazaPiesa(550, 370, 10, b3, c3);
+            ok=1;
+        }
+
+        if(a>500 and a<600 and b>250 and b<350)
+        {
+            cul1=15;
+            cul2=7;
+            cul3=15;
+            cul4=4;
+            b1=0, b2=0, b3=15;
+            c1=0, c2=0, c3=10;
+            setcolor(b1);
+            circle(250, 370, 10);
+            deseneazaPiesa(250, 370, 10, b1, c1);
+
+            setcolor(b2);
+            circle(400, 370, 10);
+            deseneazaPiesa(400, 370, 10, b2, c2);
+
+            setcolor(b3);
+            circle(550, 370, 10);
+            deseneazaPiesa(550, 370, 10, b3, c3);
+            ok=1;
+        }
+
+        ////////////////////////////////=============//////////////////////////////
+
+        if(a>180 and a<260 and b>425 and b<465)
+        {
+            pv=12;
+            pc=14;
+            b4=15, b5=0, b6=0;
+            c4=10, c5=0, c6=0;
+            setcolor(b4);
+            circle(220, 485, 10);
+            deseneazaPiesa(220, 485, 10, b4, c4);
+
+            setcolor(b5);
+            circle(400, 485, 10);
+            deseneazaPiesa(400, 485, 10, b5, c5);
+
+            setcolor(b6);
+            circle(580, 485, 10);
+            deseneazaPiesa(580, 485, 10, b6, c6);
+            ok=1;
+        }
+
+        if(a>360 and a<440 and b>425 and b<465)
+        {
+            pv=1;
+            pc=13;
+            b4=0, b5=15, b6=0;
+            c4=0, c5=10, c6=0;
+            setcolor(b4);
+            circle(220, 485, 10);
+            deseneazaPiesa(220, 485, 10, b4, c4);
+
+            setcolor(b5);
+            circle(400, 485, 10);
+            deseneazaPiesa(400, 485, 10, b5, c5);
+
+            setcolor(b6);
+            circle(580, 485, 10);
+            deseneazaPiesa(580, 485, 10, b6, c6);
+            ok=1;
+        }
+
+        if(a>540 and a<620 and b>425 and b<465)
+        {
+            pv=11;
+            pc=4;
+            b4=0, b5=0, b6=15;
+            c4=0, c5=0, c6=10;
+            setcolor(b4);
+            circle(220, 485, 10);
+            deseneazaPiesa(220, 485, 10, b4, c4);
+
+            setcolor(b5);
+            circle(400, 485, 10);
+            deseneazaPiesa(400, 485, 10, b5, c5);
+
+            setcolor(b6);
+            circle(580, 485, 10);
+            deseneazaPiesa(580, 485, 10, b6, c6);
+            ok=1;
+        }
+
+        //////////////FOR BACKGROUND COLOR//////////////////
+
+        if(a>100 and a<125 and b>540 and b<565)
+        {
+            color=1;
+            b7=15, b8=0, b9=0, b10=0, b11=0, b12=0, b13=0, b14=0, b15=0, b16=0, b17=0, b18=0;
+            c7=10, c8=0, c9=0, c10=0, c11=0, c12=0, c13=0, c14=0, c15=0, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>150 and a<175 and b>540 and b<565)
+        {
+            color=2;
+            b7=0, b8=15, b9=0, b10=0, b11=0, b12=0, b13=0, b14=0, b15=0, b16=0, b17=0, b18=0;
+            c7=0, c8=10, c9=0, c10=0, c11=0, c12=0, c13=0, c14=0, c15=0, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>200 and a<225 and b>540 and b<565)
+        {
+            color=3;
+            b7=0, b8=0, b9=15, b10=0, b11=0, b12=0, b13=0, b14=0, b15=0, b16=0, b17=0, b18=0;
+            c7=0, c8=0, c9=10, c10=0, c11=0, c12=0, c13=0, c14=0, c15=0, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>250 and a<275 and b>540 and b<565)
+        {
+            color=4;
+            b7=0, b8=0, b9=0, b10=15, b11=0, b12=0, b13=0, b14=0, b15=0, b16=0, b17=0, b18=0;
+            c7=0, c8=0, c9=0, c10=10, c11=0, c12=0, c13=0, c14=0, c15=0, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>300 and a<325 and b>540 and b<565)
+        {
+            color=5;
+            b7=0, b8=0, b9=0, b10=0, b11=15, b12=0, b13=0, b14=0, b15=0, b16=0, b17=0, b18=0;
+            c7=0, c8=0, c9=0, c10=0, c11=10, c12=0, c13=0, c14=0, c15=0, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>350 and a<375 and b>540 and b<565)
+        {
+            color=14;
+            b7=0, b8=0, b9=0, b10=0, b11=0, b12=15, b13=0, b14=0, b15=0, b16=0, b17=0, b18=0;
+            c7=0, c8=0, c9=0, c10=0, c11=0, c12=10, c13=0, c14=0, c15=0, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>400 and a<425 and b>540 and b<565)
+        {
+            color=13;
+            b7=0, b8=0, b9=0, b10=0, b11=0, b12=0, b13=15, b14=0, b15=0, b16=0, b17=0, b18=0;
+            c7=0, c8=0, c9=0, c10=0, c11=0, c12=0, c13=10, c14=0, c15=0, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>450 and a<475 and b>540 and b<565)
+        {
+            color=8;
+            b7=0, b8=0, b9=0, b10=0, b11=0, b12=0, b13=0, b14=15, b15=0, b16=0, b17=0, b18=0;
+            c7=0, c8=0, c9=0, c10=0, c11=0, c12=0, c13=0, c14=10, c15=0, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>500 and a<525 and b>540 and b<565)
+        {
+            color=9;
+            b7=0, b8=0, b9=0, b10=0, b11=0, b12=0, b13=0, b14=0, b15=15, b16=0, b17=0, b18=0;
+            c7=0, c8=0, c9=0, c10=0, c11=0, c12=0, c13=0, c14=0, c15=10, c16=0, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>550 and a<575 and b>540 and b<565)
+        {
+            color=10;
+            b7=0, b8=0, b9=0, b10=0, b11=0, b12=0, b13=0, b14=0, b15=0, b16=15, b17=0, b18=0;
+            c7=0, c8=0, c9=0, c10=0, c11=0, c12=0, c13=0, c14=0, c15=0, c16=10, c17=0, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        if(a>600 and a<625 and b>540 and b<565)
+        {
+            color=11;
+            b7=0, b8=0, b9=0, b10=0, b11=0, b12=0, b13=0, b14=0, b15=0, b16=0, b17=15, b18=0;
+            c7=0, c8=0, c9=0, c10=0, c11=0, c12=0, c13=0, c14=0, c15=0, c16=0, c17=10, c18=0;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+            ok=1;
+        }
+        if(a>650 and a<675 and b>540 and b<565)
+        {
+            color=12;
+            b7=0, b8=0, b9=0, b10=0, b11=0, b12=0, b13=0, b14=0, b15=0, b16=0, b17=0, b18=15;
+            c7=0, c8=0, c9=0, c10=0, c11=0, c12=0, c13=0, c14=0, c15=0, c16=0, c17=0, c18=10;
+
+            setcolor(b7);
+            circle(113, 585, 10);
+            deseneazaPiesa(113, 585, 10, b7, c7);
+
+            setcolor(b8);
+            circle(163, 585, 10);
+            deseneazaPiesa(163, 585, 10, b8, c8);
+
+            setcolor(b9);
+            circle(213, 585, 10);
+            deseneazaPiesa(213, 585, 10, b9, c9);
+
+            setcolor(b10);
+            circle(263, 585, 10);
+            deseneazaPiesa(263, 585, 10, b10, c10);
+
+            setcolor(b11);
+            circle(313, 585, 10);
+            deseneazaPiesa(313, 585, 10, b11, c11);
+
+            setcolor(b12);
+            circle(363, 585, 10);
+            deseneazaPiesa(363, 585, 10, b12, c12);
+
+            setcolor(b13);
+            circle(413, 585, 10);
+            deseneazaPiesa(413, 585, 10, b13, c13);
+
+            setcolor(b14);
+            circle(463, 585, 10);
+            deseneazaPiesa(463, 585, 10, b14, c14);
+
+            setcolor(b15);
+            circle(513, 585, 10);
+            deseneazaPiesa(513, 585, 10, b15, c15);
+
+            setcolor(b16);
+            circle(563, 585, 10);
+            deseneazaPiesa(563, 585, 10, b16, c16);
+
+            setcolor(b17);
+            circle(613, 585, 10);
+            deseneazaPiesa(613, 585, 10, b17, c17);
+
+            setcolor(b18);
+            circle(663, 585, 10);
+            deseneazaPiesa(663, 585, 10, b18, c18);
+
+            ok=1;
+        }
+        //if(b2==15 and b5==15 and b15==15) secret=1;
+    }
+}
+
+void settingsChange()
+{
+
+    settextjustify(1, 1);
+    setcolor(15);
+    settextstyle(10, 0, 3);
+    outtextxy(400, 225, "GAME BOARD");
+
+    for(int l=200; l<=250; l+=50)
+    {
+        for(int k=250; k<=300; k+=50)
+        {
+            setcolor(15);
+            rectangle(l, k, l+50, k+50);
+        }
+    }
+
+    for(int q=350; q<=400; q+=50)
+    {
+        for(int p=250; p<=300; p+=50)
+        {
+            setcolor(15);
+            rectangle(q, p, q+50, p+50);
+        }
+    }
+
+    for(int s=500; s<=550; s+=50)
+    {
+        for(int t=250; t<=300; t+=50)
+        {
+            setcolor(15);
+            rectangle(s, t, s+50, t+50);
+        }
+    }
+
+
+
+    for (int i=0; i<=1; i++)
+    {
+        for (int j=0; j<=1; j++)
+        {
+            if ((i+j) % 2 == 1)
+            {
+                deseneazaPatrat(225+i*50, 275+j*50, 15, 15); //15    //10
+            }
+            else
+            {
+                deseneazaPatrat(225+i*50, 275+j*50, 15, 0);  //0     //8
+            }
+        }
+    }
+
+    for (int m=0; m<=1; m++)
+    {
+        for (int n=0; n<=1; n++)
+        {
+            if ((m+n) % 2 == 1)
+            {
+                deseneazaPatrat(375+m*50, 275+n*50, 15, 10); //15    //10
+            }
+            else
+            {
+                deseneazaPatrat(375+m*50, 275+n*50, 15, 8);  //0     //8
+            }
+        }
+    }
+
+
+
+    for (int o=0; o<=1; o++)
+    {
+        for (int p=0; p<=1; p++)
+        {
+            if ((o+p) % 2 == 1)
+            {
+                deseneazaPatrat(525+o*50, 275+p*50, 15, 7); //15 //10  //7  //7  //7
+            }
+            else
+            {
+                deseneazaPatrat(525+o*50, 275+p*50, 15, RED);  //0 //8   //2  //3  //RED
+            }
+        }
+    }
+
+    outtextxy(400, 400, "THE PIECES");//----------------------------------------//
+    //rectangle(180, 425, 260, 465);
+    //rectangle(360, 425, 440, 465);
+    //rectangle(540, 425, 620, 465);
+
+    deseneazaPiesa(200, 445, 20, LIGHTRED, LIGHTRED);
+    deseneazaPiesa(240, 445, 20, YELLOW, YELLOW);
+
+    deseneazaPiesa(380, 445, 20, BLUE, BLUE);
+    deseneazaPiesa(420, 445, 20, LIGHTMAGENTA, LIGHTMAGENTA);
+
+    deseneazaPiesa(560, 445, 20, LIGHTCYAN, LIGHTCYAN);
+    deseneazaPiesa(600, 445, 20, RED, RED);
+
+    settextjustify(1, 1);
+    setcolor(15);
+    settextstyle(10, 0, 3);
+    outtextxy(400, 515, "BACKGROUND COLOR");
+
+    for(int l=100; l<700; l+=50)
+    {
+        for(int k=540; k<590; k+=50)
+        {
+            setcolor(15);
+            rectangle(l, k, l+25, k+25);
+        }
+    }
+
+    for(int r=1; r<=12; r++)
+    {
+        switch(r)
+        {
+        case 1:
+            deseneazaPatrat(112.5, 552.5, 15, 1);
+        case 2:
+            deseneazaPatrat(162.5, 552.5, 15, 2);
+        case 3:
+            deseneazaPatrat(212.5, 552.5, 15, 3);
+        case 4:
+            deseneazaPatrat(262.5, 552.5, 15, 4);
+        case 5:
+            deseneazaPatrat(312.5, 552.5, 15, 5);
+        case 6:
+            deseneazaPatrat(362.5, 552.5, 15, 14);
+        case 7:
+            deseneazaPatrat(412.5, 552.5, 15, 13);
+        case 8:
+            deseneazaPatrat(462.5, 552.5, 15, 8);
+        case 9:
+            deseneazaPatrat(512.5, 552.5, 15, 9);
+        case 10:
+            deseneazaPatrat(562.5, 552.5, 15, 10);
+        case 11:
+            deseneazaPatrat(612.5, 552.5, 15, 11);
+        case 12:
+            deseneazaPatrat(662.5, 552.5, 15, 12);
+        }
+    }
+}
+
+void selecteazaMod()
+{
+    initwindow(800,800);
+
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(2);
+    outtextxy(400, 75, "FOX AND THE HOUNDS");
+
+    setcolor(2);
+    rectangle(70, 250, 380, 335);
+    rectangle(420, 250, 730, 335);
+    settextjustify(1, 1);
+    settextstyle(10, 0, 4);
+    outtextxy(225, 300, "PLAYER VS PLAYER");
+    outtextxy(575, 275, "PLAYER");
+    outtextxy(575, 300, "VS");
+    outtextxy(575, 325, "COMPUTER");
+    setcolor(15);
+    outtextxy(400, 200, "SELECT GAME MODE");
+
+    setcolor(2);
+    settextstyle(10, 0, 4);
+    outtextxy(400, 720, "GO BACK");
+    rectangle(315, 690, 485, 730);
+
+
+    int a1,b1;
+    int ok1=1;
+    while(ok1==1)
+    {
+        while(!ismouseclick(WM_LBUTTONDOWN));
+        getmouseclick(WM_LBUTTONDOWN,a1,b1);
+
+        if(a1>70 and a1<380 and b1>250 and b1<335)
+        {
+            ok1=0;
+            //muzicaSistem();
+            closegraph();
+        }
+        if(a1>420 and a1<730 and b1>250 and b1<335)
+        {
+            ok1=0;
+            modurile();
+            //muzicaSistem();
+        }
+        if(a1>315 and a1<485 and b1>690 and b1<730)
+        {
+            ok1=0;
+            exit1=0;
+            closegraph();
+        }
+    }
+}
+
+void foxWon()
+{
+    initwindow(800, 800);
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(2);
+    outtextxy(400, 75, "FOX AND THE HOUNDS");
+
+    settextstyle(10, HORIZ_DIR, 8);
+    setcolor(15);
+    outtextxy(400, 250, "THE FOX WON!");
+
+    setcolor(2);
+    settextstyle(10, 0, 4);
+    outtextxy(400, 380, "Play again?");
+    outtextxy(285, 425, "YES");
+    outtextxy(515, 425, "NO");
+    rectangle(200, 400, 370, 440);
+    rectangle(430, 400, 600, 440);
+
+    int a4,b4;
+    super=1;
+    while(super==1)
+    {
+        while(!ismouseclick(WM_LBUTTONDOWN));
+        getmouseclick(WM_LBUTTONDOWN,a4,b4);
+
+        if(a4>200 and a4<370 and b4>400 and b4<440)
+        {
+            super=2;
+            //muzicaSistem();
+            closegraph();
+        }
+        else if(a4>430 and a4<600 and b4>400 and b4<440)
+        {
+            super=3;
+            closegraph();
+        }
+    }
+}
+
+void houndsWon()
+{
+    initwindow(800, 800);
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(2);
+    outtextxy(400, 75, "FOX AND THE HOUNDS");
+
+    settextstyle(10, HORIZ_DIR, 8);
+    setcolor(15);
+    outtextxy(400, 250, "THE HOUNDS WON!");
+
+    setcolor(2);
+    settextstyle(10, 0, 4);
+    outtextxy(400, 380, "Play again?");
+    outtextxy(285, 425, "YES");
+    outtextxy(515, 425, "NO");
+    rectangle(200, 400, 370, 440);
+    rectangle(430, 400, 600, 440);
+
+    int a5,b5;
+    super1=1;
+    while(super1==1)
+    {
+        while(!ismouseclick(WM_LBUTTONDOWN));
+        getmouseclick(WM_LBUTTONDOWN,a5,b5);
+
+        if(a5>200 and a5<370 and b5>400 and b5<440)
+        {
+            super1=2;
+            //muzicaSistem();
+            closegraph();
+        }
+        else if(a5>430 and a5<600 and b5>400 and b5<440)
+        {
+            super1=3;
+            closegraph();
+        }
+    }
+}
+
+void modurile()
+{
+
+    initwindow(800, 800);
+    settextstyle(10, HORIZ_DIR, 7);
+    settextjustify(1, 1);
+    setcolor(2);
+    outtextxy(400, 75, "FOX AND THE HOUNDS");
+    settextjustify(1, 1);
+    settextstyle(10, 0, 4);
+    setcolor(15);
+    outtextxy(400, 200, "SELECT THE DIFFICULTY");
+    setcolor(2);
+    rectangle(245, 250, 555, 335);
+    rectangle(245, 355, 555, 440);
+    rectangle(245, 460, 555, 545);
+    settextjustify(1, 1);
+    settextstyle(10, 0, 5);
+    outtextxy(400, 298, "EASY");
+    outtextxy(400, 403, "MEDIUM");
+    outtextxy(400, 508, "HARD");
+
+    /*setcolor(2);
+    settextstyle(10, 0, 4);
+    outtextxy(400, 720, "GO BACK");
+    rectangle(315, 690, 485, 730);
+    */
+
+    int u1,u2;
+    int ok6=1;
+    while(ok6==1)
+    {
+        while(!ismouseclick(WM_LBUTTONDOWN));
+        getmouseclick(WM_LBUTTONDOWN,u1,u2);
+
+        if(u1>245 and u1<555 and u2>250 and u2<335)
+        {
+            ok6=0;
+            mod=1;
+            //muzicaSistem();
+            closegraph();
+        }
+
+        if(u1>245 and u1<555 and u2>355 and u2<440)
+        {
+            ok6=0;
+            mod=2;
+            //muzicaSistem();
+            closegraph();
+        }
+
+        if(u1>245 and u1<555 and u2>460 and u2<545)
+        {
+            ok6=0;
+            mod=3;
+            //muzicaSistem();
+            closegraph();
+        }
+
+        /*if(u1>315 and u1<485 and u2>690 and u2<730)
+        {
+            ok6=0;
+            exit2=0;
+            closegraph();
+        }*/
+    }
+}
+
+void EasyMod(int & win)
+{
+///coordonate click vulpe
+    int a,b;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,a,b);
+
+    int x,y;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+
+    while(x%50!=0) x--;
+    while(y%50!=0) y--;
+
+
+    while(a%50!=0) a--;
+    while(b%50!=0) b--;
+
+    int bine = 1;
+
+    if(x<200 or x>600 or y<200 or y>600)
+        bine=0;
+
+    if(a<200 or a>600 or b<200 or b>600)
+        bine = 0;
+
+    if(((x/10%10+y/10%10)%2==0))
+        bine = 0;
+
+    if(((a/10%10+b/10%10)%2==0))
+        bine = 0;
+
+    int liniea=b, linieb=a;
+    liniea/=50, linieb/=50;
+    liniea-=3,linieb-=3;
+
+    int liniex=y, liniey=x;
+    liniex/=50,liniey/=50;
+    liniex-=3,liniey-=3;
+
+    if(abs(liniea-liniex)!=1) bine=0;
+    if(abs(linieb-liniey)!=1) bine=0;
+
+    if(moves[liniex][liniey]==2 or moves[liniex][liniey]==3) bine=0;
+    if(moves[liniea][linieb]==0 or moves[liniea][linieb]==3) bine=0;
+    ///
+
+    if(bine==1)
+    {
+        moves[liniex][liniey]=moves[liniea][linieb];
+        moves[liniea][linieb]=0;
+
+
+        a+=25;
+        b+=25;
+        x+=25;
+        y+=25;
+
+        ///generez random unul din cei patru caini
+        int gasit=0, i1, i2, j1, j2;
+        srand(time(0));
+        while(gasit==0)
+        {
+            i1 =  (rand()%9);
+            j1 =  (rand()%9);
+
+            if(i1 > 0 && i1 < 9 && j1 > 0 && j1 < 9)
+                if(moves[i1][j1]==3)
+                    gasit=1;
+
+            if(i1 <=1 or i1>8 or j1<1 or j1>8)
+                gasit =0;
+
+            if(j1==1 and moves[i1-1][j1+1]!=0)
+                gasit=0;
+            else if(j1==8 and moves[i1-1][j1-1]!=0)
+                gasit=0;
+            else if(moves[i1-1][j1-1]!=0 and moves[i1-1][j1+1]!=0)
+                gasit=0;
+        }
+        // cout<<i1<<" "<<j1<<endl;
+        ///
+
+
+        ///generez random o pozitie unde sa mute cainele
+        while(gasit==1)
+        {
+            i2 = (rand()%9);
+            j2 = (rand()%9);
+
+            if(i2 > 0 && i2 < 9 && j2 > 0 && j2 < 9)
+                if(moves[i2][j2]==0)
+                    if(i2<i1)
+                        if(abs(i2-i1)==1 and abs(j2-j1)==1)
+                            gasit=0;
+
+            if(i2<1 or j2>8 or j2<1 or i2>8 or moves[i2][j2]!=0)
+                gasit=1;
+        }
+
+
+        //cout<<i2<<" "<<j2<<endl;
+        ///
+
+        /*
+                for(int t=1; t<=8; t++)
+                {
+                    for(int d=1; d<=8; d++)
+                        cout<<moves[t][d]<<" ";
+                        cout<<endl;
+                }
+                cout<<endl;
+        */
+
+
+        moves[i2][j2]=moves[i1][j1];
+        moves[i1][j1]=0;
+
+
+//cout<<i1<<" "<<j1<<" "<<i2<<" "<<j2<<" ";
+        ///determin coordonatele pozitiei cainelui
+
+//cout<<i2<<" "<<j2;
+        i1+=3,  j1+=3;
+        i1*=50, j1*=50;
+        i1+=25, j1+=25;
+
+//i2=7 j2=2    i2=275 j2=525
+        i2+=3,  j2+=3;
+        i2*=50, j2*=50;
+        i2+=25, j2+=25;
+        ///
+
+//      cout<<i1<<" "<<j1<<" "<<i2<<" "<<j2<<" "<<a<<" "<<b;
+        deseneazaPiesa(x,y,14,pv,pv);
+        deseneazaPatrat(a,b,cul1,cul2);
+        delay(50);
+
+        deseneazaPiesa(j2,i2,14,pc,pc);
+        deseneazaPatrat(j1,i1,cul1,cul2);
+
+        int nr_caini=0;
+        for(int dog=1; dog<=8; dog++)
+            nr_caini+=moves[1][dog];
+        nr_caini/=3;
+        if(nr_caini==4)
+            win=2;
+
+        if(nr_caini==3)
+        {
+            if(moves[2][1]==3  and moves[1][2]==3)
+                win==2;
+            if(moves[2][3]==3 and moves[1][2]==3 and moves[1][4]==3)
+                win=2;
+            if(moves[2][5]==3 and moves[1][4]==3 and moves[1][6]==3)
+                win=2;
+            if(moves[2][7]==3 and moves[1][6]==3 and moves[1][8]==3)
+                win=2;
+        }
+
+        if(nr_caini==2)
+            if(moves[1][2]==3 and moves[1][4]==3)
+                if(moves[2][1]==3 and moves[2][3]==3)
+                    win=2;
+
+        cout<<a<<" "<<b<<" "<<endl;
+        cout<<x<<" "<<y<<endl;
+    }
+
+}
+
+void mediumMod(int & win)
+{
+    int a,b;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,a,b);
+
+    int x,y;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+
+    while(x%50!=0) x--;
+    while(y%50!=0) y--;
+
+
+    while(a%50!=0) a--;
+    while(b%50!=0) b--;
+
+    int bine = 1;
+
+    if(x<200 or x>600 or y<200 or y>600)
+        bine=0;
+
+    if(a<200 or a>600 or b<200 or b>600)
+        bine = 0;
+
+    if(((x/10%10+y/10%10)%2==0))
+        bine = 0;
+
+    if(((a/10%10+b/10%10)%2==0))
+        bine = 0;
+
+    int liniea=b, linieb=a;
+    liniea/=50, linieb/=50;
+    liniea-=3,linieb-=3;
+
+    int liniex=y, liniey=x;
+    liniex/=50,liniey/=50;
+    liniex-=3,liniey-=3;
+
+    if(abs(liniea-liniex)!=1) bine=0;
+    if(abs(linieb-liniey)!=1) bine=0;
+
+    if(moves[liniex][liniey]==2 or moves[liniex][liniey]==3) bine=0;
+    if(moves[liniea][linieb]==0 or moves[liniea][linieb]==3) bine=0;
+    ///
+
+
+    if(bine==1)
+    {
+        moves[liniex][liniey]=moves[liniea][linieb];
+        moves[liniea][linieb]=0;
+
+        a+=25;
+        b+=25;
+        x+=25;
+        y+=25;
+        int l=0,c=0, new_l, new_c,linie,coloana,gasit;
+
+
+        if(linieb-liniey<0) //vulpea muta la dreapta
+        {
+            linie=8,coloana=1,gasit=0;
+
+            for(linie=8; linie>=1 and gasit==0; linie--)
+                for(coloana=1; coloana<=8 and gasit==0; coloana++)
+                    if(moves[linie][coloana]==3)
+                    {
+                        if(coloana == 1 and linie!=1 and moves[linie-1][coloana+1]==0)
+                        {
+                            l=linie, c=coloana,gasit=1;
+                            //break;
+                        }
+                        else if(coloana!=8 and linie!=1 and moves[linie-1][coloana+1]==0)
+                        {
+                            l=linie, c=coloana, gasit=1;
+                            //break;
+                        }
+
+                    }
+
+            moves[l-1][c+1]=3;
+            moves[l][c]=0;
+            new_l=l-1, new_c=c+1;
+
+            cout<<l<<" "<<c<< " "<<new_l<<" "<<new_c<<endl;
+
+            l+=3,  c+=3;
+            l*=50, c*=50;
+            l+=25, c+=25;
+
+            new_l+=3,  new_c+=3;
+            new_l*=50, new_c*=50;
+            new_l+=25, new_c+=25;
+        }
+        //cout<<l<<" "<<c<<" "<<new_l<<" "<<new_c<<endl;
+        else
+        {
+            linie=8,coloana=8,gasit=0;
+
+            for(linie=8; linie>=1 and gasit==0; linie--)
+                for(coloana = 8; coloana>=1 and gasit==0; coloana--)
+                    if(moves[linie][coloana]==3)
+                    {
+                        if(coloana == 8 and linie!=1 and moves[linie-1][coloana-1]==0)
+                        {
+                            l=linie, c=coloana,gasit=1;
+                            //break;
+                        }
+                        else if(coloana!=1 and linie!=1 and moves[linie-1][coloana-1]==0)
+                        {
+                            l=linie, c=coloana, gasit=1;
+                            //break;
+                        }
+                    }
+
+            moves[l-1][c-1]=3;
+            moves[l][c]=0;
+            new_l=l-1, new_c=c-1;
+
+            cout<<l<<" "<<c<< " "<<new_l<<" "<<new_c<<endl;
+
+            l+=3,  c+=3;
+            l*=50, c*=50;
+            l+=25, c+=25;
+
+            new_l+=3,  new_c+=3;
+            new_l*=50, new_c*=50;
+            new_l+=25, new_c+=25;
+
+        }
+
+        deseneazaPiesa(x,y,14,pv,pv);
+        deseneazaPatrat(a,b,cul1,cul2);
+
+        delay(50);
+
+        deseneazaPiesa(new_c,new_l,14,pc,pc);
+        deseneazaPatrat(c,l,cul1,cul2);
+
+        int nr_caini=0;
+        for(int dog=1; dog<=8; dog++)
+            nr_caini+=moves[1][dog];
+        nr_caini/=3;
+        if(nr_caini==4)
+            win=2;
+
+        if(nr_caini==3)
+        {
+            if(moves[2][1]==3  and moves[1][2]==3)
+                win==2;
+            if(moves[2][3]==3 and moves[1][2]==3 and moves[1][4]==3)
+                win=2;
+            if(moves[2][5]==3 and moves[1][4]==3 and moves[1][6]==3)
+                win=2;
+            if(moves[2][7]==3 and moves[1][6]==3 and moves[1][8]==3)
+                win=2;
+        }
+
+        if(nr_caini==2)
+            if(moves[1][2]==3 and moves[1][4]==3)
+                if(moves[2][1]==3 and moves[2][3]==3)
+                    win=2;
+
+        for(int yu=1; yu<=8; yu++)
+        {
+            for(int ju=1; ju<=8; ju++)
+                cout<<moves[yu][ju]<<" ";
+            cout<<endl;
+        }
+        cout<<endl;
+
+        // cout<<l<<" "<<c<< " "<<new_l<<" "<<new_c<<endl;
+    }
+
+}
+
+int pozitie_caini()
+{
+    int coloana_caine=0,linie;
+    for(int i=2; i<=7; i++)
+        if(moves[i][1]==3) coloana_caine=1,linie=i;
+    if(coloana_caine==1)
+    {
+        if(moves[linie][3]==3 and moves[linie][5]==3 and moves[linie][7]==3)
+            return 1;
+        else if(moves[linie][3]==3 and moves[linie][5]==3 and moves[linie-1][6]==3)
+            return 2;
+        else if(moves[linie][3]==3 and moves[linie-1][4]==3 and moves[linie-1][6]==3)
+            return 3;
+        else if(moves[linie-1][2]==3 and moves[linie-1][4]==3 and moves[linie-1][6]==3)
+            return 4;
+        else if(moves[linie+1][2]==3 and moves[linie+1][4]==3 and moves[linie+1][6]==3)
+            return 5;
+        else if(moves[linie][3]==3 and moves[linie+1][4]==3 and moves[linie+1][6]==3)
+            return 6;
+        else if(moves[linie][3]==3 and moves[linie][5]==3 and moves[linie+1][6]==3)
+            return 7;
+        else if(moves[linie+1][2]==3 and moves[linie+1][4]==3 and moves[linie][5]==3)
+            return 8;
+        else if(moves[linie-1][2]==3 and moves[linie-1][4]==3 and moves[linie-2][5]==3)
+            return 9;
+        else if(moves[linie-1][2]==3 and moves[linie-2][3]==3 and moves[linie-2][5]==3)
+            return 10;
+        else if(moves[linie-1][2]==3 and moves[linie-1][4]==3 and moves[linie-3][4]==3)
+            return 11;
+        else if(moves[linie-1][4]==3 and moves[linie-2][3]==3 and moves[linie-3][4]==3)
+            return 12;
+        else if(moves[linie][3]==3 and moves[linie-1][4]==3 and moves[linie-2][5]==3)
+            return 13;
+        else if(moves[linie][3]==3 and moves[linie-2][3]==3 and moves[linie-2][5]==3)
+            return 14;
+        else if(moves[linie-2][3]==3 and moves[linie-1][4]==3 and moves[linie-1][6]==3)
+            return 15;
+    }
+
+    if(coloana_caine==0)
+        for(int i=2; i<=7; i++)
+            if(moves[i][2]==3) coloana_caine=2,linie=i;
+
+    if(coloana_caine==2)
+    {
+        if(moves[linie][4]==3 and moves[linie][6]==3 and moves[linie][8]==3)
+            return 1;
+        else if(moves[linie][4]==3 and moves[linie][6]==3 and moves[linie-1][7]==3)
+            return 2;
+        else if(moves[linie][4]==3 and moves[linie-1][5]==3 and moves[linie-1][7]==3)
+            return 3;
+        else if(moves[linie-1][3]==3 and moves[linie-1][5]==3 and moves[linie-1][7]==3)
+            return 4;
+        else if(moves[linie+1][3]==3 and moves[linie+1][5]==3 and moves[linie+1][7]==3)
+            return 5;
+        else if(moves[linie][4]==3 and moves[linie+1][5]==3 and moves[linie+1][7]==3)
+            return 6;
+        else if(moves[linie][4]==3 and moves[linie][6]==3 and moves[linie+1][7]==3)
+            return 7;
+        else if(moves[linie+1][3]==3 and moves[linie+1][5]==3 and moves[linie][6]==3)
+            return 8;
+        else if(moves[linie][4]==3 and moves[linie-1][5]==3 and moves[linie-2][6]==3)
+            return 9;
+        else if(moves[linie-1][3]==3 and moves[linie-1][5]==3 and moves[linie-2][6]==3)
+            return 10;
+        else if(moves[linie][4]==3 and moves[linie+1][5]==3 and moves[linie][6]==3)
+            return 11;
+        else if(moves[linie][4]==3 and moves[linie+1][5]==3 and moves[linie-1][7]==3)
+            return 12;
+        else if(moves[linie+2][4]==3 and moves[linie+1][5]==3 and moves[linie+1][7]==3)
+            return 13;
+        else if(moves[linie+2][4]==3 and moves[linie+1][5]==3 and moves[linie-1][5]==3)
+            return 14;
+        else if(moves[linie+1][3]==3 and moves[linie+1][5]==3 and moves[linie-1][5]==3)
+            return 15;
+        else if(moves[linie-2][4]==3 and moves[linie-1][5]==3 and moves[linie-2][6]==3)
+            return 16;
+        else if(moves[linie-2][4]==3 and moves[linie-1][5]==3 and moves[linie-2][7]==3)
+            return 17;
+        else if(moves[linie-2][4]==3 and moves[linie-2][6]==3 and moves[linie-3][7]==3)
+            return 18;
+        else if(moves[linie-2][4]==3 and moves[linie-1][5]==3 and moves[linie-3][7]==3)
+            return 19;
+        else if(moves[linie-1][3]==3 and moves[linie][6]==3 and moves[linie-1][7]==3)
+            return 20;
+        else if(moves[linie-1][3]==3 and moves[linie][4]==3 and moves[linie-2][4]==3)
+            return 21;
+        else if(moves[linie-1][3]==3 and moves[linie-3][3]==3 and moves[linie][4]==3)
+            return 22;
+        else if(moves[linie-2][2]==3 and moves[linie-3][3]==3 and moves[linie][4]==3)
+            return 23;
+        else if(moves[linie+2][4]==3 and moves[linie+1][5]==3 and moves[linie][6]==3)
+            return 24;
+        else if(moves[linie-1][3]==3 and moves[linie][4]==3 and moves[linie-3][5]==3)
+            return 25;
+        else if(moves[linie][4]==3 and moves[linie-2][4]==3 and moves[linie-3][5]==3)
+            return 26;
+        else if(moves[linie-1][3]==3 and moves[linie-2][4]==3 and moves[linie-3][5]==3)
+            return 27;
+        else if(moves[linie][3]==3 and moves[linie-2][3]==3 and moves[linie-2][5]==3)
+            return 28;
+        else if(moves[linie-1][3]==3 and moves[linie][4]==3 and moves[linie][6]==3)
+            return 29;
+        else if(moves[linie-1][3]==3 and moves[linie-1][5]==3 and moves[linie][6]==3)
+            return 30;
+        else if(moves[linie+1][3]==3 and moves[linie][4]==3 and moves[linie][6]==3)
+            return 31;
+        else if(moves[linie+1][3]==3 and moves[linie][4]==3 and moves[linie-1][7]==3)
+            return 32;
+        else if(moves[linie+1][3]==3 and moves[linie-1][5]==3 and moves[linie-1][7]==3)
+            return 33;
+        else if(moves[linie+1][3]==3 and moves[linie-1][5]==3 and moves[linie][6]==3)
+            return 34;
+        else if(moves[linie][4]==3 and moves[linie-1][5]==3 and moves[linie][6]==3)
+            return 35;
+    }
+
+    if(coloana_caine==0)
+        for(int i=2; i<=7; i++)
+            if(moves[i][3]==3) coloana_caine=3,linie=i;
+
+    if(coloana_caine==3)
+        if(moves[linie+1][4]==3 and moves[linie+1][6]==3 and moves[linie+1][8]==3) return 1;
+        else if(moves[linie+1][4]==3 and moves[linie+1][6]==3 and moves[linie][7]==3) return 2;
+        else if(moves[linie-1][4]==3 and moves[linie][5]==3 and moves[linie][7]==3) return 3;
+        else if(moves[linie+1][4]==3 and moves[linie][5]==3 and moves[linie][7]==3) return 4;
+        else if(moves[linie+1][4]==3 and moves[linie][5]==3 and moves[linie-1][6]==3) return 5;
+        else if(moves[linie+1][4]==3 and moves[linie][5]==3 and moves[linie-2][5]==3) return 6;
+        else if(moves[linie-1][4]==3 and moves[linie][5]==3 and moves[linie-1][6]==3) return 7;
+        else if(moves[linie-1][4]==3 and moves[linie-1][6]==3 and moves[linie-2][7]==3) return 8;
+
+    if(coloana_caine==0)
+        for(int i=2; i<=7; i++)
+            if(moves[i][4]==3) coloana_caine=4,linie=i;
+
+    if(coloana_caine==4)
+        if(moves[linie-2][4]==3 and moves[linie][6]==3 and moves[linie-1][7]==3) return 1;
+        else if(moves[linie-2][4]==3 and moves[linie-1][5]==3 and moves[linie-1][7]==3) return 2;
+        else if(moves[linie-2][4]==3 and moves[linie-1][5]==3 and moves[linie-2][6]==3) return 3;
+        else if(moves[linie-2][4]==3 and moves[linie-1][5]==3 and moves[linie-3][7]==3) return 4;
+        else if(moves[linie-2][4]==3 and moves[linie-2][6]==3 and moves[linie-3][7]==3) return 5;
+
+
+}
+
+void hardMod(int & win)
+{
+    int a,b;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,a,b);
+
+    int x,y;
+    while(!ismouseclick(WM_LBUTTONDOWN));
+    getmouseclick(WM_LBUTTONDOWN,x,y);
+
+    while(x%50!=0) x--;
+    while(y%50!=0) y--;
+
+
+    while(a%50!=0) a--;
+    while(b%50!=0) b--;
+
+    int bine = 1;
+
+    if(x<200 or x>600 or y<200 or y>600)
+        bine=0;
+
+    if(a<200 or a>600 or b<200 or b>600)
+        bine = 0;
+
+    if(((x/10%10+y/10%10)%2==0))
+        bine = 0;
+
+    if(((a/10%10+b/10%10)%2==0))
+        bine = 0;
+
+    int liniea=b, linieb=a;
+    liniea/=50, linieb/=50;
+    liniea-=3,linieb-=3;
+
+    int liniex=y, liniey=x;
+    liniex/=50,liniey/=50;
+    liniex-=3,liniey-=3;
+
+    if(abs(liniea-liniex)!=1) bine=0;
+    if(abs(linieb-liniey)!=1) bine=0;
+
+    if(moves[liniex][liniey]==2 or moves[liniex][liniey]==3) bine=0;
+    if(moves[liniea][linieb]==0 or moves[liniea][linieb]==3) bine=0;
+
+    if(bine==1)
+    {
+        moves[liniex][liniey]=moves[liniea][linieb];
+        moves[liniea][linieb]=0;
+
+        a+=25;
+        b+=25;
+        x+=25;
+        y+=25;
+        int linie1=0,gasit=0,l,c,newl,newc;
+        if(moves[8][1]==3 or moves[8][3]==3 or moves[8][5]==3 or moves[8][7]==3)
+            linie1=0;
+        else
+            linie1=1;
+        while(gasit==0)
+        {
+            if(linie1==0)
+            {
+                //muta piesele de pe linia 8
+                if(moves[8][1]==3) gasit=1,newl=7,newc=2,l=8,c=1;
+                else if(moves[8][3]==3) gasit=1, newl=7,newc=4,l=8,c=3;
+                else if(moves[8][5]==3) gasit=1, newl=7, newc=6,l=8,c=5;
+                else if(moves[8][7]==3) gasit=1, newl=7, newc=8,l=8,c=7;
+                ///
+            }
+            else
+            {
+                int coloana_caine=0,linie_caini;
+                for(int i=2; i<=7; i++)
+                    if(moves[i][1]==3) coloana_caine=1,linie_caini=i;
+
+                if(coloana_caine==0)
+                    for(int i=2; i<=7; i++)
+                        if(moves[i][2]==3) coloana_caine=2,linie_caini=i;
+
+                if(coloana_caine==0)
+                    for(int i=2; i<=7; i++)
+                        if(moves[i][3]==3) coloana_caine=3,linie_caini=i;
+
+                if(coloana_caine==0)
+                    for(int i=2; i<=7; i++)
+                        if(moves[i][4]==3) coloana_caine=4,linie_caini=i;
+
+                cout<<linie_caini<<" "<<coloana_caine<<" "<<pozitie_caini<<endl;
+
+                if(coloana_caine==1)
+                {
+                    if(pozitie_caini()==1)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==0)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                        else if(moves[linie_caini-1][coloana_caine+1]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+5,l=linie_caini,c=coloana_caine+6;
+                        else if(moves[linie_caini-1][coloana_caine+3]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                        else
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==2)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==0)
+                            gasit=1,newl=linie_caini-1,newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                        else if(moves[linie_caini-1][coloana_caine+1]!=0)
+                            gasit=1,newl=linie_caini-1,newc=coloana_caine+3,l=linie_caini,c=coloana_caine+4;
+                    }
+                    else if(pozitie_caini()==3)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==0)
+                            gasit=1,newl=linie_caini-1,newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                        else if(moves[linie_caini-1][coloana_caine+1]!=0)
+                            gasit=1,newl=linie_caini-2,newc=coloana_caine+4,l=linie_caini-1,c=coloana_caine+5;
+                    }
+                    else if(pozitie_caini()==4)
+                    {
+                        if(moves[linie_caini-3][coloana_caine+1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine+2,l=linie_caini-1,c=coloana_caine+1;
+                        else gasit=1, newl=linie_caini-2, newc=coloana_caine+4,l=linie_caini-1,c=coloana_caine+5;
+                    }
+                    else if(pozitie_caini()==5)
+                    {
+                        if(moves[linie_caini][coloana_caine+2]==0)
+                            gasit=1,newl=linie_caini,newc=coloana_caine+2,l=linie_caini+1,c=coloana_caine+1;
+                        else if(moves[linie_caini][coloana_caine+2]!=0)
+                            gasit=1,newl=linie_caini,newc=coloana_caine+4,l=linie_caini+1,c=coloana_caine+5;
+                    }
+                    else if(pozitie_caini()==6)
+                    {
+                        if(moves[linie_caini][coloana_caine+4]==0)
+                            gasit=1,newl=linie_caini,newc=coloana_caine+4,l=linie_caini+1,c=coloana_caine+3;
+                        else if(moves[linie_caini][coloana_caine+4]!=0)
+                            gasit=1,newl=linie_caini-1,newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==7)
+                    {
+                        if(moves[linie_caini][coloana_caine+6]==0)
+                            gasit=1,newl=linie_caini,newc=coloana_caine+6,l=linie_caini+1,c=coloana_caine+5;
+                        else if(moves[linie_caini][coloana_caine+6]!=0)
+                            win=2;
+                    }
+                    else if(pozitie_caini()==8)
+                    {
+                        if(moves[linie_caini][coloana_caine+2]==0)
+                            gasit=1,newl=linie_caini,newc=coloana_caine+2,l=linie_caini+1,c=coloana_caine+1;
+                        else win=2;
+                    }
+                    else if(pozitie_caini()==9)
+                    {
+                        if(moves[linie_caini-2][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-3, newc=coloana_caine+3, l=linie_caini-2, c=coloana_caine+4;
+                        else if(moves[linie_caini-2][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine+2, l=linie_caini-1, c=coloana_caine+3;
+                    }
+                    else if(pozitie_caini()==10)
+                    {
+                        if(moves[linie_caini-2][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-3, newc=coloana_caine+1, l=linie_caini-2, c=coloana_caine+2;
+                        else if(moves[linie_caini-3][coloana_caine+1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine, l=linie_caini-1, c=coloana_caine+1;
+                    }
+                    else if(pozitie_caini()==11)
+                    {
+                        if(moves[linie_caini-3][coloana_caine+1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine+2, l=linie_caini-1, c=coloana_caine+1;
+                    }
+                    else if(pozitie_caini()==12)
+                    {
+                        if(moves[linie_caini-2][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                        else if(moves[linie_caini-4][coloana_caine+2]==2 or moves[linie_caini-4][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==13)
+                    {
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine+2, l=linie_caini-1, c=coloana_caine+3;
+                    }
+                    else if(pozitie_caini()==14)
+                    {
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==15)
+                    {
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                    }
+                }
+                else if(coloana_caine==2)
+                {
+                    if(pozitie_caini()==1)
+                    {
+                        if(moves[linie_caini-1][1]==2 or moves[linie_caini-1][3]==2 or moves[linie_caini-1][5]==2)
+                            gasit=1, newl=linie_caini-1, newc=7,l=linie_caini,c=coloana_caine+6;
+                        else if(moves[linie_caini-1][7]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                        else if(moves[linie_caini-1][coloana_caine+5]==0)
+                            gasit=1, newl=linie_caini-1, newc=7,l=linie_caini,c=coloana_caine+6;
+                    }
+                    else if(pozitie_caini()==2)
+                    {
+                        if(moves[linie_caini-1][coloana_caine-1]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine+2;
+                        else
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+3, l=linie_caini, c=coloana_caine+4;
+
+
+                    }
+
+                    else if(pozitie_caini()==3)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==0)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1,l=linie_caini,c=coloana_caine+2;
+                        else
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine+4,l=linie_caini-1,c=coloana_caine+5;
+                    }
+                    else if(pozitie_caini()==4)
+                    {
+                        if(moves[linie_caini-1][1]==0)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1,l=linie_caini,c=coloana_caine;
+                        else
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine,l=linie_caini-1,c=coloana_caine+1;
+                    }
+                    else if(pozitie_caini()==5)
+                    {
+                        if(moves[linie_caini][coloana_caine+2]==0)
+                            gasit=1, newl=linie_caini, newc=coloana_caine+2,l=linie_caini+1,c=coloana_caine+1;
+                        else if(moves[linie_caini][coloana_caine+2]!=0)
+                            gasit=1, newl=linie_caini, newc=coloana_caine+4,l=linie_caini+1,c=coloana_caine+5;
+                    }
+                    else if(pozitie_caini()==6)
+                    {
+                        if(moves[linie_caini][coloana_caine+4]==0)
+                            gasit=1, newl=linie_caini, newc=coloana_caine+4,l=linie_caini+1,c=coloana_caine+3;
+                        else if(moves[linie_caini][coloana_caine+4]!=0)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==7)
+                    {
+                        if(moves[linie_caini][coloana_caine+6]==0)
+                            gasit=1, newl=linie_caini, newc=coloana_caine+6,l=linie_caini+1,c=coloana_caine+5;
+                        else if(moves[linie_caini][coloana_caine+6]!=0)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+5,l=linie_caini,c=coloana_caine+4;
+                    }
+                    else if(pozitie_caini()==8)
+                    {
+                        if(moves[linie_caini][coloana_caine+2]==0)
+                            gasit=1,newl=linie_caini,newc=coloana_caine+2,l=linie_caini+1,c=coloana_caine+1;
+                        else if(moves[linie_caini][coloana_caine+2]!=0)
+                            gasit=1,newl=linie_caini-1,newc=coloana_caine+1,l=linie_caini,c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==9)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==0)
+                            gasit=1,newl=linie_caini-1, newc=coloana_caine+1,l=linie_caini,c=coloana_caine+2;
+                        else if(moves[linie_caini-1][coloana_caine+1]!=0)
+                            gasit=1,newl=linie_caini-2,newc=coloana_caine+2,l=linie_caini-1,c=coloana_caine+3;
+                    }
+                    else if(pozitie_caini()==10)
+                    {
+                        if(moves[linie_caini-1][coloana_caine-1]==0 and moves[linie_caini-3][coloana_caine+3]!=2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                        else if(moves[linie_caini-1][coloana_caine-1]!=0)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine, l=linie_caini-1, c=coloana_caine+1;
+                        else if(moves[linie_caini-3][coloana_caine+3]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine+2, l=linie_caini-1, c=coloana_caine+1;
+                    }
+                    else if(pozitie_caini()==11)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+3]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                        else gasit=1, newl=linie_caini-1, newc=coloana_caine+5, l=linie_caini, c=coloana_caine+4;
+                    }
+                    else if(pozitie_caini()==12)
+                    {
+                        gasit=1, newl=linie_caini, newc=coloana_caine+4, l=linie_caini+1, c=coloana_caine+3;
+                    }
+                    else if(pozitie_caini()==13)
+                    {
+                        gasit=1, newl=linie_caini+1, newc=coloana_caine+1, l=linie_caini+2, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==14)
+                    {
+                        gasit=1, newl=linie_caini+1, newc=coloana_caine+1, l=linie_caini+2, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==15)
+                    {
+                        if(moves[linie_caini][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                        else if(moves[linie_caini-2][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                        else if(moves[linie_caini-2][coloana_caine]==2)
+                            gasit=1, newl=linie_caini, newc=coloana_caine+2, l=linie_caini+1, c=coloana_caine+3;
+                    }
+                    else if(pozitie_caini()==16)
+                    {
+                        if(moves[linie_caini-3][coloana_caine+3]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                        else if(moves[linie_caini-4][coloana_caine+4]==2)
+                            gasit=1, newl=linie_caini-3, newc=coloana_caine+5, l=linie_caini-2, c=coloana_caine+4;
+                        else if(moves[linie_caini-4][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==17)
+                    {
+                        gasit=1, newl=linie_caini-2, newc=coloana_caine+4, l=linie_caini-1, c=coloana_caine+3;
+                    }
+                     else if(pozitie_caini()==18)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==19)
+                    {
+                        gasit=1, newl=linie_caini-2, newc=coloana_caine+4, l=linie_caini-1, c=coloana_caine+3;
+                    }
+                    else if(pozitie_caini()==20)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine+3, l=linie_caini, c=coloana_caine+4;
+                    }
+                    else if(pozitie_caini()==21)
+                    {
+                        if(moves[linie_caini-4][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-3, newc=coloana_caine+3, l=linie_caini-2, c=coloana_caine+2;
+                        else //if (moves[linie_caini-2][coloana_caine]==2 and moves[][coloana_caine]!=2)
+                            gasit=1, newl=linie_caini-3, newc=coloana_caine+1, l=linie_caini-2, c=coloana_caine+2;
+                       // else gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==22)
+                    {
+                        if(moves[linie_caini-4][coloana_caine-1]==2 or moves[linie_caini-4][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine, l=linie_caini-1, c=coloana_caine+1;
+                        else if(moves[linie_caini-2][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                        else if(moves[linie_caini-1][coloana_caine-1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine, l=linie_caini-1, c=coloana_caine+1;
+                        else if(moves[linie_caini-3][coloana_caine-1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine, l=linie_caini-1, c=coloana_caine+1;
+                        else if(moves[linie_caini-2][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==23)
+                    {
+                        gasit=1, newl=linie_caini-3, newc=coloana_caine-1, l=linie_caini-2, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==24)
+                    {
+                        gasit=1, newl=linie_caini+1, newc=coloana_caine+1, l=linie_caini+2, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==25)
+                    {
+                        gasit=1, newl=linie_caini-2, newc=coloana_caine+2, l=linie_caini-1, c=coloana_caine+1;
+                    }
+                    else if(pozitie_caini()==26)
+                    {
+                        if(moves[linie_caini-4][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-3, newc=coloana_caine+1, l=linie_caini-2, c=coloana_caine+2;
+                        else
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==27)
+                    {
+                        if(moves[linie_caini-4][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-3, newc=coloana_caine+1, l=linie_caini-2, c=coloana_caine+2;
+                        else if(moves[linie_caini-1][coloana_caine-1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine, l=linie_caini-1, c=coloana_caine+1;
+                        else
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==28)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==29)
+                    {
+                        if(moves[linie_caini-1][coloana_caine-1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine, l=linie_caini-1, c=coloana_caine+1;
+                        else
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+3, l=linie_caini, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==30)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine+5, l=linie_caini, c=coloana_caine+4;
+                    }
+                    else if(pozitie_caini()==31)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+5, l=linie_caini, c=coloana_caine+4;
+                        else
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+3, l=linie_caini, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==32)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine+4, l=linie_caini-1, c=coloana_caine+5;
+                        else if(moves[linie_caini-2][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+3, l=linie_caini, c=coloana_caine+2;
+                    }
+                    else if(pozitie_caini()==33)
+                    {
+                        gasit=1, newl=linie_caini, newc=coloana_caine+2, l=linie_caini+1, c=coloana_caine+1;
+                    }
+                    else if(pozitie_caini()==34)
+                    {
+                        gasit=1, newl=linie_caini, newc=coloana_caine+2, l=linie_caini+1, c=coloana_caine+1;
+                    }
+                    else if(pozitie_caini()==35)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine+2;
+                    }
+                }
+                else if(coloana_caine==3)
+                {
+                    if(pozitie_caini()==1)
+                    {
+                        if(moves[linie_caini][coloana_caine+4]==0)
+                            gasit=1, newl=linie_caini, newc=coloana_caine+4, l=linie_caini+1, c=coloana_caine+5;
+                        else if(moves[linie_caini][coloana_caine+4]==2)
+                        {
+                            if(moves[linie_caini-2][coloana_caine]==2)
+                                gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine+2;
+                            else if(moves[linie_caini-1][coloana_caine+1]==2)
+                                gasit=1, newl=linie_caini-1, newc=coloana_caine+5, l=linie_caini, c=coloana_caine+4;
+                        }
+                    }
+
+                    else if(pozitie_caini()==2)
+                    {
+
+                        if(moves[linie_caini][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                        else
+                        {
+                            gasit=1, newl=linie_caini, newc=coloana_caine+2, l=linie_caini+1, c=coloana_caine+3;
+
+                        }
+                    }
+                    else if(pozitie_caini()==3)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==4)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+3, l=linie_caini, c=coloana_caine+4;
+                        else gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==5)
+                    {
+                        if(moves[linie_caini-2][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine;
+                        else if(moves[linie_caini-2][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==6)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==7)
+                    {
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                    else if(pozitie_caini()==8)
+                    {
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                }
+                else if(coloana_caine==4)
+                {
+                    if(pozitie_caini()==1)
+                    {
+                        if(moves[linie_caini-1][coloana_caine+1]==2)
+                            gasit=1, newl=linie_caini-2, newc=coloana_caine+2, l=linie_caini-1, c=coloana_caine+3;
+                        else
+                        {
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine+1, l=linie_caini, c=coloana_caine+2;
+                        }
+                    }
+                    else if(pozitie_caini()==2)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                     else if(pozitie_caini()==3)
+                    {
+                         if(moves[linie_caini-4][coloana_caine+2]==2)
+                            gasit=1, newl=linie_caini-3, newc=coloana_caine+3, l=linie_caini-2, c=coloana_caine+2;
+                         else if(moves[linie_caini-4][coloana_caine]==2)
+                            gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                     else if(pozitie_caini()==4)
+                    {
+                        gasit=1, newl=linie_caini-2, newc=coloana_caine+2, l=linie_caini-1, c=coloana_caine+1;
+                    }
+                    else if(pozitie_caini()==5)
+                    {
+                        gasit=1, newl=linie_caini-1, newc=coloana_caine-1, l=linie_caini, c=coloana_caine;
+                    }
+                }
+            }
+        }
+        moves[newl][newc]=3;
+        moves[l][c]=0;
+
+        l+=3,  c+=3;
+        l*=50, c*=50;
+        l+=25, c+=25;
+
+        newl+=3,  newc+=3;
+        newl*=50, newc*=50;
+        newl+=25, newc+=25;
+
+        deseneazaPiesa(x,y,14,pv,pv);
+        deseneazaPatrat(a,b,cul1,cul2);
+
+        delay(50);
+
+        deseneazaPiesa(newc,newl,14,pc,pc);
+        deseneazaPatrat(c,l,cul1,cul2);
+    }
+}
