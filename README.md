@@ -63,7 +63,7 @@ g++ -o fox_and_hounds.exe main.cpp -lbgi -lgdi32 -lcomdlg32 -luuid -loleaut32 -l
 
 # Run
 ./fox_and_hounds.exe
-
+```
 
 ## 🛠️ Features
 🧩 Turn-based logic  
